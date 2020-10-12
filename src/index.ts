@@ -1,17 +1,11 @@
 #!/usr/bin/env node
-import { askConf, write, read } from './helpers'
+import { genSpecific, writeDefault } from './helpers'
 import { confs, confsIn } from './conf'
 
 const main = async (configs: confsIn): Promise<void> => {
-   const confName = await askConf()
-   if (confName === '.prettierrc') {
-      const fileContent = await read(configs.prettier)
-      return await write('.prettierrc', fileContent)
-   }
-   if (confName === 'tsconfig.json') {
-      const fileContent = await read(configs.ts)
-      return await write('tsconfig.json', fileContent)
-   }
+   await writeDefault(configs)
+   await genSpecific(configs)
+   return
 }
 
 main(confs)

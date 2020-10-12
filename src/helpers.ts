@@ -1,6 +1,5 @@
 import { createInterface } from 'readline'
 import path from 'path'
-import inquirer from 'inquirer'
 import { writeFile, readFile } from 'fs/promises'
 import { Task, fromIO, chain } from 'fp-ts/lib/Task'
 import { log } from 'fp-ts/lib/Console'
@@ -8,6 +7,8 @@ import { flow } from 'fp-ts/lib/function'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither'
 import { toError } from 'fp-ts/lib/Either'
+import { confsIn, genPrettier } from './conf'
+import { askConf, askPrettier } from './inquirer'
 
 const getStrLn: Task<string> = () =>
    new Promise(resolve => {
@@ -29,21 +30,6 @@ export function ask(question: string): Task<string> {
       chain(() => getStrLn)
    )
 }
-export const askConf = () =>
-   new Promise(resolve => {
-      inquirer
-         .prompt([
-            {
-               name: 'get_config',
-               type: 'list',
-               message: 'Which config would you like to generage?',
-               choices: ['.prettierrc', 'tsconfig.json'],
-            },
-         ])
-         .then(answer => {
-            resolve(answer.get_config)
-         })
-   })
 
 export const write_ = (conf: string, content: string): TaskEither<Error, void> =>
    tryCatch(() => writeFile(path.join(process.cwd(), `${conf}`), content), toError)
@@ -64,5 +50,47 @@ export const read = async (path: string): Promise<string> => {
    } catch (e) {
       console.error('error', e)
       return ''
+   }
+}
+
+export const writeDefault = async (configs: confsIn) => {
+   const [arg] = process.argv.slice(2)
+   if (arg === '-p') {
+      const fileContent = await read(configs.prettier)
+      return await write('.prettierrc', fileContent)
+   }
+   if (arg === '-ts') {
+      const fileContent = await read(configs.ts)
+      return await write('tsconfig.json', fileContent)
+   }
+}
+
+export const genSpecific = async (configs: confsIn) => {
+   const confName = await askConf()
+   if (confName === '.prettierrc') {
+      const {
+         p_printWidth,
+         p_singleQuote,
+         p_useTabs,
+         p_trailingComma,
+         p_tabWidth,
+         p_semi,
+         p_arrowParens,
+      }: any = await askPrettier()
+      const res = genPrettier(
+         p_printWidth,
+         p_singleQuote,
+         p_useTabs,
+         p_trailingComma,
+         p_tabWidth,
+         p_semi,
+         p_arrowParens
+      )
+      return await write('.prettierrc', res)
+   }
+
+   if (confName === 'tsconfig.json') {
+      const fileContent = await read(configs.ts)
+      return await write('tsconfig.json', fileContent)
    }
 }
