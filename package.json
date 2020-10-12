@@ -1,6 +1,6 @@
 {
    "name": "generate-config",
-   "version": "0.0.7",
+   "version": "0.0.8",
    "main": "dist/index.js",
    "module": "dist/index.js",
    "repository": "https://github.com/japiirainen/generate-config.git",
@@ -8,8 +8,8 @@
    "license": "MIT",
    "bin": "dist/index.js",
    "scripts": {
-      "build": "tsc & cp -r configs dist",
-      "prepare": "tsc & cp -r configs dist",
+      "build": "tsc & cp -r configs dist & chmod +x ./dist/index.js",
+      "prepare": "tsc & cp -r configs dist & chmod +x ./dist/index.js",
       "tscw": "tsc -w"
    },
    "dependencies": {
