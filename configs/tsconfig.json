@@ -2,7 +2,7 @@
    "compilerOptions": {
       "outDir": "dist",
       "allowJs": true,
-      "target": "es5",
+      "target": "ES5",
       "esModuleInterop": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,

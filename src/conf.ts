@@ -9,14 +9,14 @@ export const confs: confsIn = {
    ts: path.join(__dirname, '..', 'configs', 'tsconfig.json'),
 }
 
-const fromBoilerplate = (
-   printWidth: any,
-   singleQuote: any,
-   useTabs: any,
-   trailingComma: any,
-   tabWidth: any,
-   semi: any,
-   arrowParens: any
+const fromPrettierBoilerplate = (
+   printWidth,
+   singleQuote,
+   useTabs,
+   trailingComma,
+   tabWidth,
+   semi,
+   arrowParens
 ) => `{
    "printWidth": ${printWidth},
    "singleQuote": ${singleQuote},
@@ -27,18 +27,34 @@ const fromBoilerplate = (
    "arrowParens": ${arrowParens}
 }
 `
+
+const fromTsConfig = (ts_outDir, ts_target, ts_strict) => `{
+   "compilerOptions": {
+      "outDir": ${ts_outDir},
+      "allowJs": true,
+      "target": ${ts_target},
+      "esModuleInterop": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "strict": ${ts_strict},
+      "declaration": true
+   },
+   "include": ["./src/**/*", "./src/*"]
+}`
+
 const trueOrFalse = (yesOrNo: 'yes' | 'no') => (yesOrNo === 'yes' ? true : false)
 const toString = (str: string) => `"${str}"`
+
 export const genPrettier = (
-   p_printWidth: any,
-   p_singleQuote: any,
-   p_useTabs: any,
-   p_trailingComma: any,
-   p_tabWidth: any,
-   p_semi: any,
-   p_arrowParens: any
-) => {
-   const config = fromBoilerplate(
+   p_printWidth,
+   p_singleQuote,
+   p_useTabs,
+   p_trailingComma,
+   p_tabWidth,
+   p_semi,
+   p_arrowParens
+) =>
+   fromPrettierBoilerplate(
       p_printWidth,
       trueOrFalse(p_singleQuote),
       trueOrFalse(p_useTabs),
@@ -47,5 +63,6 @@ export const genPrettier = (
       trueOrFalse(p_semi),
       toString(p_arrowParens)
    )
-   return config
-}
+
+export const genTs = (ts_outDir, ts_target, ts_strict) =>
+   fromTsConfig(toString(ts_outDir), toString(ts_target), trueOrFalse(ts_strict))

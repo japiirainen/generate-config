@@ -6,7 +6,7 @@
       "esModuleInterop": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      "strict": true,
+      "strict": false,
       "declaration": true
    },
    "include": ["./src/**/*", "./src/*"]

@@ -70,6 +70,38 @@ export const askPrettier = () =>
          )
    })
 
+export const askTypescript = () =>
+   new Promise(resolve => {
+      inquirer
+         .prompt([
+            {
+               name: 'ts_outDir',
+               type: 'list',
+               message: 'Desired output directory?',
+               choices: ['dist', 'build'],
+            },
+            {
+               name: 'ts_target',
+               type: 'list',
+               message: 'Desired compilation target?',
+               choices: ['ES5', 'ES6', 'ES3', 'ESNext'],
+            },
+            {
+               name: 'ts_strict',
+               type: 'list',
+               message: 'Do you prefer strict mode?',
+               choices: ['yes', 'no'],
+            },
+         ])
+         .then(({ ts_outDir, ts_target, ts_strict }) => {
+            resolve({
+               ts_outDir,
+               ts_target,
+               ts_strict,
+            })
+         })
+   })
+
 export const askConf = () =>
    new Promise(resolve => {
       inquirer

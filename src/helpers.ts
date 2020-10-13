@@ -7,8 +7,8 @@ import { flow } from 'fp-ts/lib/function'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither'
 import { toError } from 'fp-ts/lib/Either'
-import { confsIn, genPrettier } from './conf'
-import { askConf, askPrettier } from './inquirer'
+import { confsIn, genPrettier, genTs } from './conf'
+import { askConf, askPrettier, askTypescript } from './inquirer'
 
 const getStrLn: Task<string> = () =>
    new Promise(resolve => {
@@ -53,8 +53,7 @@ export const read = async (path: string): Promise<string> => {
    }
 }
 
-export const writeDefault = async (configs: confsIn) => {
-   const [arg] = process.argv.slice(2)
+export const writeDefault = async (configs: confsIn, arg: string) => {
    if (arg === '-p') {
       const fileContent = await read(configs.prettier)
       return await write('.prettierrc', fileContent)
@@ -62,6 +61,10 @@ export const writeDefault = async (configs: confsIn) => {
    if (arg === '-ts') {
       const fileContent = await read(configs.ts)
       return await write('tsconfig.json', fileContent)
+   } else {
+      return console.log(
+         'For default prettier config run with: -p\nFor default typescript config run with: -ts\nOtherwise run with no args!'
+      )
    }
 }
 
@@ -90,7 +93,8 @@ export const genSpecific = async (configs: confsIn) => {
    }
 
    if (confName === 'tsconfig.json') {
-      const fileContent = await read(configs.ts)
-      return await write('tsconfig.json', fileContent)
+      const { ts_outDir, ts_target, ts_strict }: any = await askTypescript()
+      const res = genTs(ts_outDir, ts_target, ts_strict)
+      return await write('tssconfig.json', res)
    }
 }
