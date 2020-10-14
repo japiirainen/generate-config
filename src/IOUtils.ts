@@ -7,8 +7,8 @@ import { flow } from 'fp-ts/lib/function'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither'
 import { toError } from 'fp-ts/lib/Either'
-import { confsIn, genPrettier, genTs } from './conf'
-import { askConf, askPrettier, askTypescript } from './inquirer'
+import { confsIn, genPrettier, genTs } from './confGenerators'
+import { askConf, askPrettier, askTypescript } from './inquiries'
 
 const getStrLn: Task<string> = () =>
    new Promise(resolve => {

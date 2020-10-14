@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-import { genSpecific, writeDefault } from './helpers'
-import { confs, confsIn } from './conf'
-import { Task } from 'fp-ts/lib/Task'
+import { genSpecific, writeDefault } from './IOUtils'
+import { confs, confsIn } from './confGenerators'
 
 const main = async (configs: confsIn): Promise<void> => {
    const [arg] = process.argv.slice(2)
